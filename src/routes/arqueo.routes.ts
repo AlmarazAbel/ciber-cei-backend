@@ -100,9 +100,23 @@ router.post('/cierres', async (req: AuthRequest, res: Response): Promise<void> =
     dateStyle: 'short',
     timeStyle: 'short',
   });
+  const body = req.body ?? {};
   doc.cierres.unshift({
-    ...req.body,
     fechaHora,
+    cajero: String(body.cajero || req.usuario?.nombre || 'Operador'),
+    fondoInicial: Number(body.fondoInicial) || 0,
+    ventasEfectivo: Number(body.ventasEfectivo) || 0,
+    ventasTransferencia: Number(body.ventasTransferencia) || 0,
+    ventasTarjeta: Number(body.ventasTarjeta) || 0,
+    ingresosManuales: Number(body.ingresosManuales) || 0,
+    egresosManuales: Number(body.egresosManuales) || 0,
+    efectivoTeorico: Number(body.efectivoTeorico) || 0,
+    efectivoContado: Number(body.efectivoContado) || 0,
+    diferencia: Number(body.diferencia) || 0,
+    observacion:
+      typeof body.observacion === 'string' && body.observacion.trim() !== ''
+        ? body.observacion.trim()
+        : undefined,
   });
   await doc.save();
   const creado = doc.cierres[0];

@@ -4,6 +4,7 @@ export type TipoItem = 'articulo' | 'servicio';
 
 export interface IProducto extends Document {
   codigo: string;
+  codigoBarras?: string;
   nombre: string;
   tipo: TipoItem;
   precio: number;
@@ -15,6 +16,7 @@ export interface IProducto extends Document {
 const productoSchema = new Schema<IProducto>(
   {
     codigo: { type: String, required: true, unique: true, trim: true },
+    codigoBarras: { type: String, trim: true },
     nombre: { type: String, required: true, trim: true },
     tipo: { type: String, enum: ['articulo', 'servicio'], default: 'articulo' },
     precio: { type: Number, required: true, min: 0 },

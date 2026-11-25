@@ -7,6 +7,7 @@ export interface IItemVenta {
   id: string;
   nombre: string;
   precio: number;
+  precioCompra?: number;
   cantidad: number;
   tipo: TipoItem;
 }
@@ -36,6 +37,7 @@ const itemVentaSchema = new Schema<IItemVenta>(
     id: { type: String, required: true },
     nombre: { type: String, required: true },
     precio: { type: Number, required: true },
+    precioCompra: { type: Number },
     cantidad: { type: Number, required: true },
     tipo: { type: String, enum: ['articulo', 'servicio'], required: true },
   },

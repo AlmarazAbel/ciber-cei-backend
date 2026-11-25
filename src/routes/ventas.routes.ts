@@ -37,20 +37,15 @@ router.post('/', async (req: AuthRequest, res: Response): Promise<void> => {
   const ultimaVenta = await Venta.findOne().sort({ numero: -1 });
   const numero = ultimaVenta ? ultimaVenta.numero + 1 : 1042;
 
-  for (const item of items) {
+for (const item of items) {
     if (item.tipo === 'articulo') {
-      await Producto.findOneAndUpdate(
-        { codigo: item.id, stock: { $gte: 0 } },
-        [
-          {
-            $set: {
-              stock: {
-                $max: [0, { $subtract: [{ $ifNull: ['$stock', 0] }, item.cantidad || 1] }],
-              },
-            },
-          },
-        ]
-      );
+      const producto = await Producto.findOne({ codigo: item.id });
+      if (producto) {
+        const cantidadVendida = Number(item.cantidad) || 1;
+        const stockActual = typeof producto.stock === 'number' ? producto.stock : 0;
+        producto.stock = Math.max(0, stockActual - cantidadVendida);
+        await producto.save();
+      }
     }
   }
 
